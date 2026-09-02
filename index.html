@@ -414,6 +414,44 @@
     color: var(--ink-soft);
     margin: 0;
   }
+  .event__actions{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: .3rem 1.2rem;
+    margin: .7rem 0 0;
+  }
+  .event__action{
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-family: var(--label);
+    font-size: .64rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--emerald);
+    text-decoration: none;
+    padding: .15rem 0;
+  }
+  .event__action svg{
+    width: 12px; height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .event__action:hover,
+  .event__action:focus-visible{
+    color: var(--emerald-deep);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .event__action:focus-visible{
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
 
   .dresscode{
     margin: 1.1rem 0 0;
@@ -603,12 +641,32 @@
           <span class="event__time">11:00 in the morning</span>
           <p class="event__venue-name">Noor Jame Masjid</p>
           <p class="event__venue-addr">88 Willowbrook Lane &middot; Hudson Valley, New York</p>
+          <div class="event__actions">
+            <a class="event__action" href="https://www.google.com/maps/search/?api=1&amp;query=Noor%20Jame%20Masjid%2C%2088%20Willowbrook%20Lane%2C%20Hudson%20Valley%2C%20New%20York" target="_blank" rel="noopener">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5S3 9.8 3 6.2a5 5 0 0 1 10 0c0 3.6-5 8.3-5 8.3Z"></path><circle cx="8" cy="6.2" r="1.7"></circle></svg>
+              Get Directions
+            </a>
+            <a class="event__action" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Yasmin%20%26%20Zayd%20%E2%80%94%20Nikah&amp;dates=20260418T110000/20260418T120000&amp;details=Nikah%20ceremony%20for%20Yasmin%20%26%20Zayd.&amp;location=Noor%20Jame%20Masjid%2C%2088%20Willowbrook%20Lane%2C%20Hudson%20Valley%2C%20New%20York&amp;ctz=America%2FNew_York" target="_blank" rel="noopener">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="1.5"></rect><line x1="2" y1="6.5" x2="14" y2="6.5"></line><line x1="5" y1="1.5" x2="5" y2="4"></line><line x1="11" y1="1.5" x2="11" y2="4"></line></svg>
+              Add to Calendar
+            </a>
+          </div>
         </div>
         <div class="event">
           <p class="event__label">Walima</p>
           <span class="event__time">6:00 in the evening &middot; <span class="event__note">to follow</span></span>
           <p class="event__venue-name">Thornbury Garden Estate</p>
           <p class="event__venue-addr">142 Hollow Creek Road &middot; Hudson Valley, New York</p>
+          <div class="event__actions">
+            <a class="event__action" href="https://www.google.com/maps/search/?api=1&amp;query=Thornbury%20Garden%20Estate%2C%20142%20Hollow%20Creek%20Road%2C%20Hudson%20Valley%2C%20New%20York" target="_blank" rel="noopener">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5S3 9.8 3 6.2a5 5 0 0 1 10 0c0 3.6-5 8.3-5 8.3Z"></path><circle cx="8" cy="6.2" r="1.7"></circle></svg>
+              Get Directions
+            </a>
+            <a class="event__action" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Yasmin%20%26%20Zayd%20%E2%80%94%20Walima&amp;dates=20260418T180000/20260418T210000&amp;details=Walima%20reception%20for%20Yasmin%20%26%20Zayd.&amp;location=Thornbury%20Garden%20Estate%2C%20142%20Hollow%20Creek%20Road%2C%20Hudson%20Valley%2C%20New%20York&amp;ctz=America%2FNew_York" target="_blank" rel="noopener">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="1.5"></rect><line x1="2" y1="6.5" x2="14" y2="6.5"></line><line x1="5" y1="1.5" x2="5" y2="4"></line><line x1="11" y1="1.5" x2="11" y2="4"></line></svg>
+              Add to Calendar
+            </a>
+          </div>
         </div>
       </div>
 
