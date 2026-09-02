@@ -19,17 +19,23 @@ start index.html
 
 ## Customize
 
-Everything is currently **placeholder content** (names, date, venue, RSVP
-email/phone, quote). Open `index.html` and search for these sections to
-replace them:
+Everything is currently **placeholder content** (names, date, venues, RSVP
+email/phone). Open `index.html` and search for these sections to replace them:
 
 - `<h1 class="card__names">` — the couple's names
 - `<p class="card__date">` — wedding date
-- `.schedule` block — ceremony / reception times
-- `.venue` block — venue name & address
+- `.events` block — two `.event` entries, one for the **Nikah** and one for
+  the **Walima**, each with a time, venue name, and address
+- `.dresscode` — currently "Modest, garden-formal attire kindly requested"
 - `.rsvp__link` — RSVP email (the `mailto:` href) and `.rsvp__phone` — phone number
-- `.quote` — the closing quote / message
 - `--rose`, `--sage`, `--gold` CSS variables near the top of `<style>` — color palette
+
+Islamic-specific content (leave as-is unless you want to change it):
+
+- `.bismillah-ar` / `.bismillah-en` — the opening Bismillah
+- `.verse` block — Surah Ar-Rum 30:21 (Arabic + translation), the verse
+  traditionally used on Muslim wedding invitations
+- `.dua` block — the closing blessing ("Baraka Allahu laka...") for the couple
 
 ## Design notes
 

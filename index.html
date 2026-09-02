@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#FBF6EE">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
   /* ============ Tokens ============
      A single committed world: warm cotton-paper stationery, sealed
@@ -25,6 +25,7 @@
     --serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
     --script: 'Parisienne', 'Segoe Script', cursive;
     --label:  'Jost', 'Century Gothic', Futura, sans-serif;
+    --arabic: 'Amiri', 'Traditional Arabic', 'Arabic Typesetting', serif;
 
     --dur-quick: .35s;
     --dur-med:   .7s;
@@ -283,6 +284,27 @@
   .sprig--tl{ top: 14px; left: 14px; }
   .sprig--br{ bottom: 14px; right: 14px; transform: rotate(180deg); }
 
+  .bismillah{
+    margin: 0 0 1.8rem;
+  }
+  .bismillah-ar{
+    display: block;
+    font-family: var(--arabic);
+    font-size: clamp(1.3rem, 4vw, 1.6rem);
+    line-height: 2;
+    color: var(--gold);
+    margin: 0;
+  }
+  .bismillah-en{
+    display: block;
+    font-family: var(--label);
+    font-size: .62rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: .3rem 0 0;
+  }
+
   .card__eyebrow{
     font-family: var(--label);
     font-size: .7rem;
@@ -333,41 +355,36 @@
   .divider line{ stroke: currentColor; stroke-width: 1; }
   .divider circle{ fill: currentColor; }
 
-  .schedule{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.2rem 1.6rem;
-    max-width: 380px;
-    margin: 0 auto;
+  .events{
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
   }
-  .schedule__row{ display:flex; flex-direction:column; gap:.35rem; }
-  .schedule__label{
+  .event__label{
     font-family: var(--label);
     font-size: .68rem;
-    letter-spacing: .22em;
+    letter-spacing: .3em;
     text-transform: uppercase;
     color: var(--rose);
+    margin: 0 0 .4rem;
   }
-  .schedule__time{
+  .event__time{
+    display: block;
     font-variant-numeric: tabular-nums;
     font-size: 1.05rem;
     color: var(--ink);
   }
-  .schedule__note{
-    display:block;
+  .event__note{
     font-style: italic;
     font-size: .88rem;
     color: var(--ink-soft);
-    margin-top: .15rem;
   }
-
-  .venue{ margin: 2.1rem 0 0; }
-  .venue__name{
-    font-size: 1.22rem;
+  .event__venue-name{
+    font-size: 1.14rem;
     font-weight: 600;
-    margin: 0 0 .25rem;
+    margin: .5rem 0 .2rem;
   }
-  .venue__addr{
+  .event__venue-addr{
     color: var(--ink-soft);
     margin: 0;
   }
@@ -417,15 +434,22 @@
     color: var(--ink-soft);
   }
 
-  .quote{
-    font-style: italic;
-    font-size: clamp(1.08rem, 3vw, 1.3rem);
-    line-height: 1.55;
+  .verse__ar{
+    font-family: var(--arabic);
+    font-size: clamp(1.15rem, 3.6vw, 1.4rem);
+    line-height: 2;
     color: var(--ink);
     margin: 0;
+  }
+  .verse__en{
+    font-style: italic;
+    font-size: clamp(.98rem, 2.6vw, 1.12rem);
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 1rem 0 0;
     text-wrap: balance;
   }
-  .quote cite{
+  .verse cite{
     display:block;
     font-style: normal;
     font-family: var(--label);
@@ -434,6 +458,21 @@
     text-transform: uppercase;
     color: var(--ink-soft);
     margin-top: .7rem;
+  }
+
+  .dua{ margin: 1.8rem 0 0; }
+  .dua-ar{
+    font-family: var(--arabic);
+    font-size: clamp(1rem, 3vw, 1.15rem);
+    line-height: 1.9;
+    color: var(--gold);
+    margin: 0;
+  }
+  .dua-en{
+    font-style: italic;
+    font-size: .88rem;
+    color: var(--ink-soft);
+    margin: .4rem 0 0;
   }
 
   .signature{
@@ -454,7 +493,6 @@
   }
 
   @media (max-width: 420px){
-    .schedule{ grid-template-columns: 1fr; }
     .invite-eyebrow{ letter-spacing: .22em; font-size: .66rem; margin-bottom: 1.8rem; }
     .envelope-wrap{ gap: 1.2rem; }
     .envelope{ width: 78vw; }
@@ -484,7 +522,7 @@
 
 <main>
   <section class="envelope-stage" id="envelopeStage">
-    <p class="invite-eyebrow">A Wedding Invitation</p>
+    <p class="invite-eyebrow">A Nikah &amp; Walima Invitation</p>
     <div class="envelope-wrap">
       <button type="button" class="envelope-btn" id="openBtn" aria-label="Open the invitation from Iris and Julian">
         <span class="envelope" id="envelope">
@@ -507,9 +545,14 @@
       <svg class="sprig sprig--tl" viewBox="0 0 100 140" aria-hidden="true"><use href="#sprig-shape"></use></svg>
       <svg class="sprig sprig--br" viewBox="0 0 100 140" aria-hidden="true"><use href="#sprig-shape"></use></svg>
 
-      <p class="card__eyebrow">Together with their families</p>
+      <p class="bismillah">
+        <span class="bismillah-ar" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+        <span class="bismillah-en">In the name of Allah, the Most Gracious, the Most Merciful</span>
+      </p>
+
+      <p class="card__eyebrow">By the grace of Allah, together with their families</p>
       <h1 class="card__names" id="cardHeading">Iris <span class="amp">&amp;</span> Julian</h1>
-      <p class="card__tagline">request the pleasure of your company as they exchange vows</p>
+      <p class="card__tagline">request the honour of your presence at their Nikah</p>
 
       <p class="card__date">
         <span>Saturday, the Eighteenth of April</span>
@@ -522,23 +565,22 @@
         <line x1="118" y1="7" x2="200" y2="7"></line>
       </svg>
 
-      <div class="schedule">
-        <div class="schedule__row">
-          <span class="schedule__label">Ceremony</span>
-          <span class="schedule__time">4:00 in the afternoon</span>
+      <div class="events">
+        <div class="event">
+          <p class="event__label">Nikah</p>
+          <span class="event__time">11:00 in the morning</span>
+          <p class="event__venue-name">Noor Jame Masjid</p>
+          <p class="event__venue-addr">88 Willowbrook Lane &middot; Hudson Valley, New York</p>
         </div>
-        <div class="schedule__row">
-          <span class="schedule__label">Reception</span>
-          <span class="schedule__time">6:00 in the evening<span class="schedule__note">to follow</span></span>
+        <div class="event">
+          <p class="event__label">Walima</p>
+          <span class="event__time">6:00 in the evening &middot; <span class="event__note">to follow</span></span>
+          <p class="event__venue-name">Thornbury Rose Garden</p>
+          <p class="event__venue-addr">142 Hollow Creek Road &middot; Hudson Valley, New York</p>
         </div>
       </div>
 
-      <div class="venue">
-        <p class="venue__name">Thornbury Rose Garden</p>
-        <p class="venue__addr">142 Hollow Creek Road &middot; Hudson Valley, New York</p>
-      </div>
-
-      <p class="dresscode">Garden formal &middot; <strong>soft florals &amp; pastels</strong> welcome</p>
+      <p class="dresscode"><strong>Modest</strong>, garden-formal attire kindly requested</p>
 
       <svg class="divider" viewBox="0 0 200 14" aria-hidden="true">
         <line x1="0" y1="7" x2="82" y2="7"></line>
@@ -546,7 +588,7 @@
         <line x1="118" y1="7" x2="200" y2="7"></line>
       </svg>
 
-      <p class="rsvp__heading">The favour of your reply is requested</p>
+      <p class="rsvp__heading">The favour of your reply is requested, in sha Allah</p>
       <p class="rsvp__by">by <strong>the First of March, 2026</strong></p>
       <a class="rsvp__link" href="mailto:rsvp@irisandjulian.love?subject=Iris%20%26%20Julian%20%E2%80%94%20RSVP">Reply by Email</a>
       <span class="rsvp__phone">or call (555) 019&ndash;2846</span>
@@ -557,10 +599,15 @@
         <line x1="118" y1="7" x2="200" y2="7"></line>
       </svg>
 
-      <p class="quote">
-        &ldquo;Grow old along with me, the best is yet to be.&rdquo;
-        <cite>Robert Browning</cite>
-      </p>
+      <div class="verse">
+        <p class="verse__ar" lang="ar" dir="rtl">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوٓا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ</p>
+        <p class="verse__en">&ldquo;And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy. Indeed in that are signs for a people who give thought.&rdquo;<cite>Qur&rsquo;an &middot; Surah Ar-Rum, 30:21</cite></p>
+      </div>
+
+      <div class="dua">
+        <p class="dua-ar" lang="ar" dir="rtl">بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ</p>
+        <p class="dua-en">May Allah bless you both, shower His blessings upon you, and unite you in goodness.</p>
+      </div>
 
       <p class="signature">With love, Iris &amp; Julian</p>
       <p class="edition-mark">Spring &middot; 2026</p>
