@@ -55,8 +55,11 @@
     font-size: 1.05rem;
     line-height: 1.6;
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(22,40,31,.05) 1px, transparent 0);
-    background-size: 22px 22px;
+      radial-gradient(ellipse 900px 560px at 50% -8%, rgba(216,176,116,.35), transparent 62%),
+      radial-gradient(ellipse 760px 620px at 108% 106%, rgba(31,110,82,.22), transparent 60%),
+      radial-gradient(ellipse 640px 520px at -8% 92%, rgba(139,58,66,.10), transparent 60%),
+      repeating-linear-gradient(45deg, rgba(31,110,82,.07) 0 1px, transparent 1px 36px),
+      repeating-linear-gradient(-45deg, rgba(31,110,82,.07) 0 1px, transparent 1px 36px);
   }
 
   body.locked{ overflow: hidden; height: 100vh; height: 100dvh; }
@@ -166,7 +169,7 @@
   .envelope__pocket{
     position:absolute; left:0; right:0; bottom:0; top:0;
     clip-path: polygon(0% 100%, 100% 100%, 100% 28%, 50% 56%, 0% 28%);
-    background: linear-gradient(200deg, var(--paper-deep) 0%, #E6D3A0 100%);
+    background: linear-gradient(200deg, var(--emerald) 0%, var(--emerald-deep) 100%);
     border-radius: 0 0 6px 6px;
     z-index: 2;
   }
@@ -175,7 +178,7 @@
     position:absolute; top:0; left:0; right:0;
     height: 62%;
     clip-path: polygon(0 0, 100% 0, 50% 92%);
-    background: linear-gradient(165deg, var(--paper-deep) 0%, #E7D49E 100%);
+    background: linear-gradient(165deg, var(--emerald) 0%, var(--emerald-deep) 100%);
     transform-origin: top center;
     transform: rotateX(0deg);
     transition: transform var(--dur-slow) var(--ease);
@@ -186,6 +189,22 @@
     transform: rotateX(-172deg);
   }
 
+  .envelope__trim{
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .envelope__trim polyline{
+    fill: none;
+    stroke: var(--gold-bright);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    opacity: .85;
+  }
+  .envelope__trim circle{ fill: var(--gold-bright); opacity: .85; }
+
   .envelope__seal{
     position:absolute;
     top: 55%; left:50%;
@@ -193,7 +212,11 @@
     margin: -27px 0 0 -27px;
     border-radius: 50%;
     background: radial-gradient(circle at 32% 28%, var(--gold-bright), var(--gold) 70%, #8C662F 100%);
-    box-shadow: 0 4px 10px -3px rgba(22,40,31,.5), inset 0 0 0 1px rgba(255,255,255,.18);
+    box-shadow:
+      0 4px 10px -3px rgba(22,40,31,.5),
+      inset 0 0 0 1px rgba(255,255,255,.18),
+      0 0 0 3px var(--paper),
+      0 0 0 4px var(--emerald-deep);
     display:flex; align-items:center; justify-content:center;
     z-index: 5;
     transition: transform var(--dur-med) var(--ease), opacity var(--dur-med) var(--ease);
@@ -531,6 +554,11 @@
           <span class="envelope__card-peek"></span>
           <span class="envelope__pocket"></span>
           <span class="envelope__flap" id="flap">
+            <svg class="envelope__trim" viewBox="0 0 300 124" preserveAspectRatio="none" aria-hidden="true">
+              <polyline points="6,4 150,111 294,4"></polyline>
+              <circle cx="16" cy="9" r="3"></circle>
+              <circle cx="284" cy="9" r="3"></circle>
+            </svg>
             <span class="envelope__seal" id="seal"><span>Y&amp;Z</span></span>
           </span>
         </span>
