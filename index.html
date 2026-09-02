@@ -1,0 +1,627 @@
+<title>Iris & Julian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500;600&display=swap">
+<style>
+  /* ============ Tokens ============
+     A single committed world: warm cotton-paper stationery, sealed
+     with wax and botanical linework. No dark-mode inversion — the
+     piece is a printed keepsake, not a UI, so it holds one palette
+     on any host ground (see artifact-design: "letterpress invitation"
+     is the named exception to theme-switching). */
+  :root{
+    --paper:       #FBF6EE;
+    --paper-deep:  #F1E6D5;
+    --ink:         #2B3324;
+    --ink-soft:    #5B6350;
+    --rose:        #BD727B;
+    --rose-wash:   #EAD3D1;
+    --sage:        #85966F;
+    --gold:        #AD8149;
+    --gold-bright: #D8B074;
+
+    --serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+    --script: 'Parisienne', 'Segoe Script', cursive;
+    --label:  'Jost', 'Century Gothic', Futura, sans-serif;
+
+    --dur-quick: .35s;
+    --dur-med:   .7s;
+    --dur-slow:  1.05s;
+    --ease: cubic-bezier(.22,.61,.32,1);
+
+    color-scheme: light;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    :root{ --dur-quick:.01s; --dur-med:.01s; --dur-slow:.01s; }
+  }
+
+  *{ box-sizing: border-box; }
+  ::selection{ background: var(--rose-wash); color: var(--ink); }
+
+  html, body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  body{
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(43,51,36,.05) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+
+  body.locked{ overflow: hidden; height: 100vh; height: 100dvh; }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+
+  svg{ display:block; }
+  #sprite{ position:absolute; width:0; height:0; overflow:hidden; }
+
+  /* ============ Ambient petals ============ */
+  .petal-field{
+    position: fixed; inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .petal{
+    position:absolute;
+    top: -8vh;
+    left: var(--x);
+    width: var(--size);
+    height: var(--size);
+    fill: var(--rose);
+    opacity: .38;
+    transform: translateY(0) rotate(0deg);
+    animation: drift var(--dur) linear var(--delay) infinite;
+  }
+  .petal.sage{ fill: var(--sage); }
+  .petal.gold{ fill: var(--gold-bright); }
+
+  @media (prefers-reduced-motion: reduce){
+    .petal{ animation: none; opacity:.2; }
+  }
+
+  @keyframes drift{
+    0%   { transform: translate(0,0) rotate(0deg); opacity:0; }
+    8%   { opacity:.4; }
+    92%  { opacity:.32; }
+    100% { transform: translate(var(--dx), 118vh) rotate(var(--rot)); opacity:0; }
+  }
+
+  /* ============ Envelope stage ============ */
+  .envelope-stage{
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 5;
+    padding: 6vh 1.25rem;
+    text-align: center;
+    transition: opacity var(--dur-slow) var(--ease), visibility 0s linear var(--dur-slow);
+  }
+  .envelope-stage.dismissed{
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .invite-eyebrow{
+    font-family: var(--label);
+    font-size: .72rem;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 2.4rem;
+  }
+
+  .envelope-wrap{ display:flex; flex-direction:column; align-items:center; gap: 1.6rem; }
+
+  .envelope-btn{
+    appearance: none; border:0; background:none; padding:0; margin:0;
+    cursor: pointer;
+    font: inherit; color: inherit;
+    display:block;
+  }
+  .envelope-btn:disabled{ cursor: default; }
+  .envelope-btn:focus-visible{
+    outline: 2px solid var(--gold);
+    outline-offset: 10px;
+    border-radius: 2px;
+  }
+
+  .envelope{
+    display: block;
+    position: relative;
+    width: min(84vw, 400px);
+    aspect-ratio: 3 / 2;
+    perspective: 1600px;
+  }
+
+  .envelope__back{
+    position:absolute; inset:0;
+    background: linear-gradient(155deg, var(--paper) 0%, var(--paper-deep) 100%);
+    border-radius: 6px;
+    box-shadow: 0 1.5rem 3rem -1.4rem rgba(43,51,36,.45), 0 0 0 1px rgba(173,129,73,.28);
+  }
+  .envelope__back::after{
+    content:"";
+    position:absolute; inset: 10px;
+    border: 1px solid rgba(173,129,73,.35);
+    border-radius: 3px;
+  }
+
+  .envelope__pocket{
+    position:absolute; left:0; right:0; bottom:0; top:0;
+    clip-path: polygon(0% 100%, 100% 100%, 100% 28%, 50% 56%, 0% 28%);
+    background: linear-gradient(200deg, var(--paper-deep) 0%, #E8D8BF 100%);
+    border-radius: 0 0 6px 6px;
+    z-index: 2;
+  }
+
+  .envelope__flap{
+    position:absolute; top:0; left:0; right:0;
+    height: 62%;
+    clip-path: polygon(0 0, 100% 0, 50% 92%);
+    background: linear-gradient(165deg, var(--paper-deep) 0%, #E9D9C1 100%);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform var(--dur-slow) var(--ease);
+    z-index: 4;
+    box-shadow: 0 1px 0 rgba(173,129,73,.3);
+  }
+  .envelope.opened .envelope__flap{
+    transform: rotateX(-172deg);
+  }
+
+  .envelope__seal{
+    position:absolute;
+    top: 55%; left:50%;
+    width: 54px; height: 54px;
+    margin: -27px 0 0 -27px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, var(--gold-bright), var(--gold) 70%, #8C662F 100%);
+    box-shadow: 0 4px 10px -3px rgba(43,51,36,.5), inset 0 0 0 1px rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center;
+    z-index: 5;
+    transition: transform var(--dur-med) var(--ease), opacity var(--dur-med) var(--ease);
+  }
+  .envelope__seal span{
+    font-family: var(--script);
+    color: #FBF0DC;
+    font-size: 1.05rem;
+    line-height: 1;
+    transform: translateY(1px);
+  }
+  .envelope.opened .envelope__seal{
+    transform: scale(.55) rotate(28deg);
+    opacity: 0;
+  }
+
+  .envelope__card-peek{
+    position:absolute;
+    left: 8%; right: 8%; bottom: 6%;
+    top: 14%;
+    background: var(--paper);
+    border-radius: 4px;
+    box-shadow: 0 -4px 14px -8px rgba(43,51,36,.4);
+    z-index: 1;
+    transform: translateY(14%) scale(.94);
+    opacity: .85;
+    transition: transform var(--dur-slow) var(--ease), opacity var(--dur-slow) var(--ease);
+  }
+  .envelope.opened .envelope__card-peek{
+    transform: translateY(-2%) scale(.98);
+    opacity: 1;
+  }
+
+  .open-hint{
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: .95rem;
+    letter-spacing: .02em;
+    display:flex; flex-direction:column; align-items:center; gap:.4rem;
+  }
+  .open-hint svg{ width:14px; height:14px; fill: var(--gold); animation: bob 2.2s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce){ .open-hint svg{ animation:none; } }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(5px);} }
+
+  /* ============ Invitation card ============ */
+  .card-stage{
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: start center;
+    padding: 8vh 1.25rem 10vh;
+  }
+
+  .card{
+    position: relative;
+    width: min(92vw, 560px);
+    background: var(--paper);
+    border-radius: 10px;
+    box-shadow: 0 2rem 4rem -2rem rgba(43,51,36,.35), 0 0 0 1px rgba(173,129,73,.22);
+    padding: clamp(2.4rem, 6vw, 4rem) clamp(1.6rem, 7vw, 3.6rem) clamp(3rem, 7vw, 4rem);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .card::before{
+    content:"";
+    position:absolute; inset: 12px;
+    border: 1px solid rgba(173,129,73,.32);
+    border-radius: 6px;
+    pointer-events:none;
+  }
+  body.unlocked .card{
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+  }
+
+  .sprig{
+    position:absolute;
+    width: clamp(52px, 9vw, 78px);
+    height: auto;
+    color: var(--sage);
+    opacity: .85;
+  }
+  .sprig .bud{ fill: var(--rose); }
+  .sprig .bud.gold{ fill: var(--gold-bright); }
+  .sprig .leaf{ fill: currentColor; }
+  .sprig .stem{ stroke: currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; }
+  .sprig--tl{ top: 14px; left: 14px; }
+  .sprig--br{ bottom: 14px; right: 14px; transform: rotate(180deg); }
+
+  .card__eyebrow{
+    font-family: var(--label);
+    font-size: .7rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 1.4rem;
+  }
+
+  .card__names{
+    font-family: var(--script);
+    font-size: clamp(2.6rem, 9vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .card__names .amp{
+    color: var(--rose);
+    font-size: .68em;
+    padding: 0 .05em;
+  }
+
+  .card__tagline{
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+    margin: .9rem 0 0;
+  }
+
+  .card__date{
+    font-family: var(--label);
+    font-size: clamp(.92rem, 2.6vw, 1.05rem);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 1.6rem 0 0;
+  }
+  .card__date span{ display:block; }
+  .card__date .yr{ color: var(--rose); }
+
+  .divider{
+    width: min(230px, 60%);
+    height: 14px;
+    margin: 2.1rem auto;
+    color: var(--gold);
+  }
+  .divider line{ stroke: currentColor; stroke-width: 1; }
+  .divider circle{ fill: currentColor; }
+
+  .schedule{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem 1.6rem;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .schedule__row{ display:flex; flex-direction:column; gap:.35rem; }
+  .schedule__label{
+    font-family: var(--label);
+    font-size: .68rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--rose);
+  }
+  .schedule__time{
+    font-variant-numeric: tabular-nums;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .schedule__note{
+    display:block;
+    font-style: italic;
+    font-size: .88rem;
+    color: var(--ink-soft);
+    margin-top: .15rem;
+  }
+
+  .venue{ margin: 2.1rem 0 0; }
+  .venue__name{
+    font-size: 1.22rem;
+    font-weight: 600;
+    margin: 0 0 .25rem;
+  }
+  .venue__addr{
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .dresscode{
+    margin: 1.1rem 0 0;
+    font-family: var(--label);
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .dresscode strong{ color: var(--sage); font-weight:600; }
+
+  .rsvp__heading{
+    font-size: 1.12rem;
+    font-style: italic;
+    margin: 0 0 .3rem;
+  }
+  .rsvp__by{
+    color: var(--ink-soft);
+    margin: 0 0 1.3rem;
+  }
+  .rsvp__by strong{ color: var(--ink); font-weight:600; }
+
+  .rsvp__link{
+    display: inline-block;
+    font-family: var(--label);
+    font-size: .78rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: linear-gradient(155deg, var(--rose), #A85F69);
+    padding: .85em 2em;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 .8rem 1.6rem -1rem rgba(189,114,123,.65);
+    transition: transform var(--dur-quick) var(--ease), box-shadow var(--dur-quick) var(--ease);
+  }
+  .rsvp__link:hover{ transform: translateY(-2px); box-shadow: 0 1.1rem 1.8rem -1rem rgba(189,114,123,.7); }
+  .rsvp__link:focus-visible{ outline: 2px solid var(--gold); outline-offset: 4px; }
+
+  .rsvp__phone{
+    display:block;
+    margin-top: 1rem;
+    font-size: .88rem;
+    color: var(--ink-soft);
+  }
+
+  .quote{
+    font-style: italic;
+    font-size: clamp(1.08rem, 3vw, 1.3rem);
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .quote cite{
+    display:block;
+    font-style: normal;
+    font-family: var(--label);
+    font-size: .68rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: .7rem;
+  }
+
+  .signature{
+    font-family: var(--script);
+    font-size: 1.7rem;
+    color: var(--rose);
+    margin: 1.6rem 0 0;
+  }
+
+  .edition-mark{
+    font-family: var(--label);
+    font-size: .62rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: .7;
+    margin: 2.4rem 0 0;
+  }
+
+  @media (max-width: 420px){
+    .schedule{ grid-template-columns: 1fr; }
+  }
+</style>
+
+<svg id="sprite" aria-hidden="true">
+  <symbol id="petal-shape" viewBox="0 0 100 100">
+    <path d="M50 4 C 74 22 80 56 50 96 C 20 56 26 22 50 4 Z"></path>
+  </symbol>
+  <symbol id="sprig-shape" viewBox="0 0 100 140">
+    <path class="stem" d="M50 132 C 46 96 54 70 50 34"></path>
+    <ellipse class="leaf" cx="30" cy="96" rx="15" ry="7" transform="rotate(-32 30 96)"></ellipse>
+    <ellipse class="leaf" cx="72" cy="80" rx="15" ry="7" transform="rotate(28 72 80)"></ellipse>
+    <ellipse class="leaf" cx="32" cy="58" rx="13" ry="6" transform="rotate(-40 32 58)"></ellipse>
+    <g transform="translate(50 22)">
+      <ellipse class="bud" cx="0" cy="-6" rx="7" ry="9"></ellipse>
+      <ellipse class="bud" cx="-8" cy="2" rx="6" ry="8" transform="rotate(-30 -8 2)"></ellipse>
+      <ellipse class="bud" cx="8" cy="2" rx="6" ry="8" transform="rotate(30 8 2)"></ellipse>
+      <circle class="bud gold" cx="0" cy="0" r="3.4"></circle>
+    </g>
+  </symbol>
+</svg>
+
+<div class="petal-field" id="petalField" aria-hidden="true"></div>
+
+<main>
+  <section class="envelope-stage" id="envelopeStage">
+    <p class="invite-eyebrow">A Wedding Invitation</p>
+    <div class="envelope-wrap">
+      <button type="button" class="envelope-btn" id="openBtn" aria-label="Open the invitation from Iris and Julian">
+        <span class="envelope" id="envelope">
+          <span class="envelope__card-peek"></span>
+          <span class="envelope__pocket"></span>
+          <span class="envelope__flap" id="flap">
+            <span class="envelope__seal" id="seal"><span>I&amp;J</span></span>
+          </span>
+        </span>
+      </button>
+      <span class="open-hint">
+        <svg viewBox="0 0 24 24"><path d="M12 16 3 7l1.4-1.4L12 13.2l7.6-7.6L21 7z"></path></svg>
+        tap the seal to open
+      </span>
+    </div>
+  </section>
+
+  <section class="card-stage" id="cardStage">
+    <article class="card">
+      <svg class="sprig sprig--tl" viewBox="0 0 100 140" aria-hidden="true"><use href="#sprig-shape"></use></svg>
+      <svg class="sprig sprig--br" viewBox="0 0 100 140" aria-hidden="true"><use href="#sprig-shape"></use></svg>
+
+      <p class="card__eyebrow">Together with their families</p>
+      <h1 class="card__names" id="cardHeading">Iris <span class="amp">&amp;</span> Julian</h1>
+      <p class="card__tagline">request the pleasure of your company as they exchange vows</p>
+
+      <p class="card__date">
+        <span>Saturday, the Eighteenth of April</span>
+        <span class="yr">Two Thousand Twenty-Six</span>
+      </p>
+
+      <svg class="divider" viewBox="0 0 200 14" aria-hidden="true">
+        <line x1="0" y1="7" x2="82" y2="7"></line>
+        <circle cx="100" cy="7" r="3"></circle>
+        <line x1="118" y1="7" x2="200" y2="7"></line>
+      </svg>
+
+      <div class="schedule">
+        <div class="schedule__row">
+          <span class="schedule__label">Ceremony</span>
+          <span class="schedule__time">4:00 in the afternoon</span>
+        </div>
+        <div class="schedule__row">
+          <span class="schedule__label">Reception</span>
+          <span class="schedule__time">6:00 in the evening<span class="schedule__note">to follow</span></span>
+        </div>
+      </div>
+
+      <div class="venue">
+        <p class="venue__name">Thornbury Rose Garden</p>
+        <p class="venue__addr">142 Hollow Creek Road &middot; Hudson Valley, New York</p>
+      </div>
+
+      <p class="dresscode">Garden formal &middot; <strong>soft florals &amp; pastels</strong> welcome</p>
+
+      <svg class="divider" viewBox="0 0 200 14" aria-hidden="true">
+        <line x1="0" y1="7" x2="82" y2="7"></line>
+        <circle cx="100" cy="7" r="3"></circle>
+        <line x1="118" y1="7" x2="200" y2="7"></line>
+      </svg>
+
+      <p class="rsvp__heading">The favour of your reply is requested</p>
+      <p class="rsvp__by">by <strong>the First of March, 2026</strong></p>
+      <a class="rsvp__link" href="mailto:rsvp@irisandjulian.love?subject=Iris%20%26%20Julian%20%E2%80%94%20RSVP">Reply by Email</a>
+      <span class="rsvp__phone">or call (555) 019&ndash;2846</span>
+
+      <svg class="divider" viewBox="0 0 200 14" aria-hidden="true">
+        <line x1="0" y1="7" x2="82" y2="7"></line>
+        <circle cx="100" cy="7" r="3"></circle>
+        <line x1="118" y1="7" x2="200" y2="7"></line>
+      </svg>
+
+      <p class="quote">
+        &ldquo;Grow old along with me, the best is yet to be.&rdquo;
+        <cite>Robert Browning</cite>
+      </p>
+
+      <p class="signature">With love, Iris &amp; Julian</p>
+      <p class="edition-mark">Spring &middot; 2026</p>
+    </article>
+  </section>
+</main>
+
+<script>
+  (function(){
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.body.classList.add('locked');
+
+    // Scatter ambient petals
+    var field = document.getElementById('petalField');
+    var kinds = ['', 'sage', 'gold'];
+    var count = reduceMotion ? 5 : 11;
+    for (var i = 0; i < count; i++) {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 100 100');
+      svg.classList.add('petal');
+      var kind = kinds[i % kinds.length];
+      if (kind) svg.classList.add(kind);
+
+      var x = Math.round(Math.random() * 100);
+      var size = (10 + Math.random() * 14).toFixed(0) + 'px';
+      var dur = (16 + Math.random() * 14).toFixed(1) + 's';
+      var delay = (-Math.random() * 26).toFixed(1) + 's';
+      var dx = (Math.random() * 16 - 8).toFixed(0) + 'vw';
+      var rot = (240 + Math.random() * 200).toFixed(0) + 'deg';
+
+      svg.style.setProperty('--x', x + '%');
+      svg.style.setProperty('--size', size);
+      svg.style.setProperty('--dur', dur);
+      svg.style.setProperty('--delay', delay);
+      svg.style.setProperty('--dx', dx);
+      svg.style.setProperty('--rot', rot);
+
+      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#petal-shape');
+      svg.appendChild(use);
+      field.appendChild(svg);
+    }
+
+    var openBtn = document.getElementById('openBtn');
+    var envelope = document.getElementById('envelope');
+    var envelopeStage = document.getElementById('envelopeStage');
+
+    function openInvitation(){
+      if (openBtn.disabled) return;
+      openBtn.disabled = true;
+      envelope.classList.add('opened');
+
+      var settle = reduceMotion ? 60 : 950;
+      setTimeout(function(){
+        document.body.classList.remove('locked');
+        document.body.classList.add('unlocked');
+        envelopeStage.classList.add('dismissed');
+        envelopeStage.setAttribute('aria-hidden', 'true');
+        var heading = document.getElementById('cardHeading');
+        if (heading) {
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+        }
+      }, settle);
+    }
+
+    openBtn.addEventListener('click', openInvitation);
+  })();
+</script>
